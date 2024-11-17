@@ -1,0 +1,13 @@
+.devcontainer
+.pytest_cache
+.git
+.venv
+htmlcov
+.coverage
+.env
+.env.local
+.pylintrc
+.vscode
+Dockerfile
+README.md
+.pip-index-url-example

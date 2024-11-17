@@ -12,6 +12,12 @@ class ApplicationSettings(BaseModel):
     ...
 
 
+class DatabaseSettings(BaseModel):
+    """Database settings."""
+
+    url: str = ''
+
+
 class YandexDiskSettings(BaseModel):
     """Yandex disk settings."""
 
@@ -35,5 +41,6 @@ class Settings(BaseSettings):
     )
 
     app: ApplicationSettings = ApplicationSettings()
+    database: DatabaseSettings = DatabaseSettings()
     yandex_disk: YandexDiskSettings = YandexDiskSettings()
     tg: TelegramSettings = TelegramSettings()
