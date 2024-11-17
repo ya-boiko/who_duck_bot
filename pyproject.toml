@@ -1,0 +1,24 @@
+[project]
+name = "who_duck_bot"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Vlad Boiko", email = "acc.v.boiko@gmail.com"},
+]
+dependencies = [
+    "aiogram>=3.14.0",
+    "httpx>=0.27.2",
+    "aiofiles>=24.1.0",
+    "yadisk>=3.1.0",
+    "pydantic>=2.9.2",
+    "python-dotenv>=1.0.1",
+    "pydantic-settings>=2.6.1",
+    "dependency-injector>=4.43.0",
+]
+requires-python = "==3.11.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
