@@ -6,9 +6,9 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from dependency_injector import containers, providers
 
+from app.adapters.unit_of_work import UnitOfWork
 from app.service_layer.handlers import mapping
 from app.service_layer.message_bus import MessageBus
-from app.service_layer.unit_of_work import UnitOfWork
 from app.yandex_disk.yandex_storage import YandexStorage
 
 

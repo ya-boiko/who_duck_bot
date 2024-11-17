@@ -48,12 +48,10 @@ class YandexStorage:
     async def mkdir(self, dir_path: str, client: Optional[AsyncClient] = None) -> None:
         if client:
             await client.mkdir(dir_path)
-            print(f'Директория {dir_path} создана.')
             return
 
         async with self.client() as client:
             await client.mkdir(dir_path)
-            print(f'Директория {dir_path} создана.')
 
     async def ls(self, dir_path, client: Optional[AsyncClient] = None) -> list[str]:
         if client:
@@ -93,5 +91,6 @@ class YandexStorage:
 
                 path += f'/{app_dir}'
                 await self.mkdir(path, client)
+                print(f'Директория {path} создана.')
 
             self._app_dir_exists = True

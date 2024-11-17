@@ -1,9 +1,5 @@
 """Telegram."""
 
-import asyncio
-import logging
-import os
-import sys
 import tempfile
 
 from aiogram import Bot, Dispatcher, html, F
@@ -11,14 +7,15 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from dependency_injector.wiring import Provide, inject
 
-from app.yandex_disk.yandex_storage import YandexStorage
+from app.domain import commands
+from app.service_layer.message_bus import MessageBus
 
 
 @inject
 async def tg_polling(
     dp: Dispatcher = Provide['dp'],
     bot: Bot = Provide['bot'],
-    yandex_storage: YandexStorage = Provide['yandex_storage'],
+    bus: MessageBus = Provide['bus'],
 ):
 
     @dp.message(CommandStart())
@@ -29,20 +26,18 @@ async def tg_polling(
 
     @dp.message(F.document)
     async def save_document(message: Message):
-        file_id = message.document.file_id
-
-        file = await bot.get_file(file_id)
-        filepath = file.file_path
-        filename = filepath.split('/')[-1]
-
         with tempfile.TemporaryDirectory() as temp_dir:
-            temp_file_path = os.path.join(temp_dir, filename)
-            await bot.download_file(filepath, temp_file_path)
-
-            print(f'Файл сохранен во временную директорию: {temp_file_path}')
+            cmd = commands.DownloadFileToDir(
+                file_id=message.document.file_id,
+                dir=temp_dir
+            )
+            temp_file_path = await bus.handle(cmd).pop()
 
             with open(temp_file_path, 'rb') as temp_file:
-                await yandex_storage.upload(temp_file, filename)
+                cmd = commands.UploadFile(
+                    file_path=temp_file_path,
+                )
+                filename = await bus.handle(cmd).pop()
 
             await message.reply(f'Изображение сохранено как {filename}')
 
