@@ -11,3 +11,4 @@ class DownloadFileToDir(Command):
 
     file_id: str
     dir: str
+    filename: str
