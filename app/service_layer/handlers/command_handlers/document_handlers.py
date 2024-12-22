@@ -57,7 +57,7 @@ async def generate_image_description(
         base64_output = base64_encoded_data.decode('utf-8')
 
         completion = openai_client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
