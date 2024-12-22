@@ -5,10 +5,12 @@ from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from dependency_injector import containers, providers
+from openai import OpenAI
 
 from app.adapters.unit_of_work import UnitOfWork
 from app.service_layer.handlers import mapping
 from app.service_layer.message_bus import MessageBus
+from app.settings import Settings
 from app.yandex_disk.yandex_storage import YandexStorage
 
 
@@ -19,6 +21,17 @@ class Container(containers.DeclarativeContainer):
         packages=['app'],
     )
     config = providers.Configuration()
+
+    # settings
+    settings = providers.Singleton(
+        Settings,
+    )
+
+    # openai
+    openai_client = providers.Singleton(
+        OpenAI,
+        api_key=config.openai.api_secret_key
+    )
 
     # yandex disk
     yandex_storage = providers.Factory(
