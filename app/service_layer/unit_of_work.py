@@ -4,6 +4,8 @@ import abc
 
 from sqlalchemy import orm
 
+from app.service_layer import repositories
+
 
 class AbstractUnitOfWork(abc.ABC):
     """Abstract UoW."""
@@ -74,4 +76,4 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
 class UnitOfWork(AbstractUnitOfWork):
     """UoW."""
 
-    ...
+    store_images: repositories.StoreImageRepository = None
