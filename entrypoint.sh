@@ -2,4 +2,5 @@
 
 . .venv/bin/activate
 
-python3 -m app.main
+bin/alembic upgrade head \
+  && python3 -m app.main
