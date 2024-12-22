@@ -1,5 +1,7 @@
 """Yandex command handlers."""
 
+from pathlib import Path
+
 from dependency_injector.wiring import Provide, inject
 
 from app.domain.commands import UploadFile
@@ -13,8 +15,9 @@ async def upload_file(
     uow: UnitOfWork,
     yandex_storage: YandexStorage = Provide['yandex_storage'],
 ) -> str:
-    with open(cmd.file_path, 'rb') as f:
-        filename = cmd.file_path.split('/')[-1]
+    file_path = Path(cmd.file_path)
+    with open(file_path, 'rb') as f:
+        filename = file_path.name
         await yandex_storage.upload(f, filename)
 
-        return filename
+        return f'{yandex_storage.app_dir}/{filename}'
