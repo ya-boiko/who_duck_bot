@@ -9,13 +9,24 @@ from app.utils import get_env_file_path
 class ApplicationSettings(BaseModel):
     """Application settings."""
 
-    ...
+    admins: str = ''
 
 
 class DatabaseSettings(BaseModel):
     """Database settings."""
 
     url: str = ''
+    db: str = ''
+    user: str = ''
+    password: str = ''
+
+
+class OpenAISettings(BaseModel):
+    """OpenAI settings."""
+
+    api_secret_key: str = ''
+    embedding_model: str = ''
+    embedding_dimensions: int = 1536
 
 
 class YandexDiskSettings(BaseModel):
@@ -44,3 +55,5 @@ class Settings(BaseSettings):
     database: DatabaseSettings = DatabaseSettings()
     yandex_disk: YandexDiskSettings = YandexDiskSettings()
     tg: TelegramSettings = TelegramSettings()
+    openai: OpenAISettings = OpenAISettings()
+
