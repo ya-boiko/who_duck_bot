@@ -48,15 +48,14 @@ async def generate_image_description(
     cmd: commands.GenerateDocumentDescription,
     uow: UnitOfWork,
     openai_client: OpenAI = Provide['openai_client'],
-    bus: MessageBus = Provide['bus'],
 ) -> str:
-    """Generates an answer fot the ticket."""
+    """Generates the image description."""
     with open(cmd.file_path, 'rb') as binary_file:
         binary_file_data = binary_file.read()
         base64_encoded_data = base64.b64encode(binary_file_data)
         base64_output = base64_encoded_data.decode('utf-8')
 
-        completion = openai_client.chat.completions.create(
+        completion = await openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {
@@ -72,7 +71,7 @@ async def generate_image_description(
                     ],
                 }
             ],
-            max_tokens=500
+            max_tokens=350
         )
 
         description = completion.choices[0].message.content

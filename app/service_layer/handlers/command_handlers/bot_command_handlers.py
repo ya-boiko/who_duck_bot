@@ -1,9 +1,12 @@
 """Yandex command handlers."""
 
+import json
 import tempfile
 import uuid
+from datetime import datetime, UTC
 
 from dependency_injector.wiring import Provide, inject
+from redis.asyncio import Redis
 
 from app.domain import commands
 from app.domain.models import StoreImage
@@ -52,3 +55,28 @@ async def save_image(
 
         text = f'Изображение сохранено как {filename}.\n\n{description}'
         return text
+
+
+@inject
+async def start_dialog(
+    cmd: commands.StartDialog,
+    uow: UnitOfWork,
+    redis_cli: Redis = Provide['redis_cli']
+):
+    val = await redis_cli.get(str(cmd.user_id))
+    if not val:
+        data = {
+            "created_at": datetime.now(UTC).isoformat(),
+            "updated_at": None,
+            "version": 1,
+        }
+        await redis_cli.set(str(cmd.user_id), json.dumps(data))
+
+
+@inject
+async def finish_dialog(
+    cmd: commands.FinishDialog,
+    uow: UnitOfWork,
+    redis_cli: Redis = Provide['redis_cli']
+):
+    await redis_cli.delete(str(cmd.user_id))
