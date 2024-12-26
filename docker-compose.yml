@@ -10,6 +10,7 @@ services:
       - appNetwork
     depends_on:
       - db
+      - redis
 
   db:
     image: pgvector/pgvector:pg17
@@ -27,8 +28,24 @@ services:
     networks:
       - appNetwork
 
+  redis:
+    image: docker.io/bitnami/redis:7.4
+    restart: unless-stopped
+    environment:
+      - REDIS_PASSWORD=${REDIS__PASSWORD}
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/bitnami/redis/data
+    networks:
+      - appNetwork
+
+
 volumes:
   postgres-data: null
+  redis-data: null
+
 
 networks:
   appNetwork:
