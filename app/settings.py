@@ -25,6 +25,8 @@ class DatabaseSettings(BaseModel):
 class RedisSettings(BaseModel):
     """Redis settings."""
 
+    host: str = ''
+    port: int = 0
     password: str = ''
 
 

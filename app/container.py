@@ -70,11 +70,11 @@ class Container(containers.DeclarativeContainer):
     # redis
     redis_cli = providers.Factory(
         redis.Redis,
-        host='localhost',
-        port=6379,
-        # charset="utf-8",
-        decode_responses=True,
+        host=config.redis.host,
+        port=config.redis.port,
         password=config.redis.password,
+        decode_responses=True,
+        # charset="utf-8",
     )
 
     # bus
