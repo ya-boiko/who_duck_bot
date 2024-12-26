@@ -10,6 +10,7 @@ class ApplicationSettings(BaseModel):
     """Application settings."""
 
     admins: str = ''
+    channel: int = 0
 
 
 class DatabaseSettings(BaseModel):
@@ -18,6 +19,12 @@ class DatabaseSettings(BaseModel):
     url: str = ''
     db: str = ''
     user: str = ''
+    password: str = ''
+
+
+class RedisSettings(BaseModel):
+    """Redis settings."""
+
     password: str = ''
 
 
@@ -53,6 +60,7 @@ class Settings(BaseSettings):
 
     app: ApplicationSettings = ApplicationSettings()
     database: DatabaseSettings = DatabaseSettings()
+    redis: RedisSettings = RedisSettings()
     yandex_disk: YandexDiskSettings = YandexDiskSettings()
     tg: TelegramSettings = TelegramSettings()
     openai: OpenAISettings = OpenAISettings()
