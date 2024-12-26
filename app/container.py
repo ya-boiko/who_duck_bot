@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from dependency_injector import containers, providers
 from openai import OpenAI
+import redis.asyncio as redis
 
 from app.adapters.unit_of_work import UnitOfWork
 from app.service_layer.handlers import mapping
@@ -65,6 +66,16 @@ class Container(containers.DeclarativeContainer):
         expire_on_commit=False,
     )
     uow = providers.Factory(UnitOfWork, session_factory)
+
+    # redis
+    redis_cli = providers.Factory(
+        redis.Redis,
+        host='localhost',
+        port=6379,
+        # charset="utf-8",
+        decode_responses=True,
+        password=config.redis.password,
+    )
 
     # bus
     event_handlers = providers.Object(mapping.EVENT_HANDLERS)
