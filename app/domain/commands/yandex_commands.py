@@ -10,3 +10,11 @@ class UploadFile(Command):
     """Command for uploading file to Yandex storage."""
 
     file_path: str
+
+
+@dataclass
+class DownloadFile(Command):
+    """Command for downloading file from Yandex storage."""
+
+    filename: str
+    dest_dir: str

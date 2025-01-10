@@ -23,6 +23,7 @@ def bind_mappers():
         properties={
             'vector': relationship(
                 models.StoreImageVector,
+                primaryjoin="and_(StoreImage.vector_id == StoreImageVector.id)",
                 lazy='immediate',
                 cascade='all',
             ),

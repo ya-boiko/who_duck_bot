@@ -33,3 +33,12 @@ class GenerateWhiningAnswer(Command):
 
     user_id: int
     message: str
+
+
+@dataclass
+class FindCloseImages(Command):
+    """Command for finding closer images for the description."""
+
+    user_id: int
+    description: str
+    limit: int
