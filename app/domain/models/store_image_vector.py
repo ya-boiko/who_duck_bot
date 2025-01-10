@@ -8,7 +8,7 @@ from typing import TypeAlias, Optional
 from .entity import Entity
 
 
-Vector: TypeAlias = list[float]
+VectorType: TypeAlias = list[float]
 
 
 @dataclass
@@ -16,7 +16,7 @@ class StoreImageVector(Entity):
     """Store image vector model."""
 
     id: uuid.UUID
-    vector: Vector
+    vector: VectorType
 
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -31,7 +31,7 @@ class StoreImageVector(Entity):
         return hash(self.id)
 
     @classmethod
-    def create(cls, vector: Vector, **kwargs) -> 'StoreImageVector':
+    def create(cls, vector: VectorType, **kwargs) -> 'StoreImageVector':
         """Creates the class object."""
         return StoreImageVector(
             id=kwargs.get('id', uuid.uuid4()),

@@ -6,7 +6,7 @@ from typing import Optional
 from datetime import datetime, UTC
 
 from .entity import Entity
-from .store_image_vector import StoreImageVector, Vector
+from .store_image_vector import StoreImageVector, VectorType
 
 
 @dataclass
@@ -34,7 +34,7 @@ class StoreImage(Entity):
         return hash(self.id)
 
     @classmethod
-    def create(cls, filename: str, dir_path: str, description: str, vector: Vector, **kwargs) -> 'StoreImage':
+    def create(cls, filename: str, dir_path: str, description: str, vector: VectorType, **kwargs) -> 'StoreImage':
         """Creates the class object."""
         store_image_vector = StoreImageVector.create(
             vector=vector,
