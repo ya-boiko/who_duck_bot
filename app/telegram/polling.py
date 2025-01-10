@@ -1,17 +1,16 @@
 """Telegram."""
+import tempfile
 
 from aiogram import Bot, Dispatcher, html, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message
+from aiogram.types import Message, InputMediaPhoto
 from dependency_injector.wiring import Provide, inject
+from aiogram.utils.media_group import MediaGroupBuilder
 
-from app.adapters.orm import bind_mappers
+
 from app.domain import commands
 from app.service_layer.message_bus import MessageBus
 from app.settings import Settings
-
-
-bind_mappers()
 
 
 @inject
@@ -83,24 +82,32 @@ async def tg_polling(
         )
         answer = await bus.handle(cmd).pop()
 
-        await bot.send_message(
-            chat_id=message.chat.id,
-            text=answer
-        )
+        send_massage_kwargs = {
+            'chat_id': message.chat.id,
+        }
+        if 'text' in answer:
+            send_massage_kwargs.update({
+                'text': answer['text']
+            })
+        if 'media' in answer:
+            # cat = FSInputFile(answer['media'][0].name)
+            # ii = InputMediaPhoto(media=, caption="text")
+
+            with tempfile.TemporaryDirectory() as temp_dir:
+                cmd = commands.DownloadFile(filename=answer['media'][0].filename, dest_dir=temp_dir)
+                answer = await bus.handle(cmd).pop()
+
+            send_massage_kwargs.update({
+                'media': answer['media']
+            })
+
+
+        if 'text' or 'media' in send_massage_kwargs:
+            await bot.send_message(**send_massage_kwargs)
 
         # await bot.send_message(
         #     chat_id=gen_channel_id(settings.app.channel),
         #     text=answer
         # )
-
-    # @dp.message()
-    # async def get_message(message: Message):
-    #     if not is_admin_message(message):
-    #         return None
-    #
-    #     await bot.send_message(
-    #         chat_id=gen_channel_id(settings.app.chanel),
-    #         text=f"Прочитано сообщение: {message.text or message.caption}"
-    #     )
 
     await dp.start_polling(bot)
