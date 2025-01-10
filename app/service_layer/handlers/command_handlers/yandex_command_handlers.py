@@ -4,7 +4,7 @@ from pathlib import Path
 
 from dependency_injector.wiring import Provide, inject
 
-from app.domain.commands import UploadFile
+from app.domain.commands import UploadFile, DownloadFile
 from app.service_layer.unit_of_work import UnitOfWork
 from app.yandex_disk import YandexStorage
 
@@ -21,3 +21,13 @@ async def upload_file(
         await yandex_storage.upload(f, filename)
 
         return f'{yandex_storage.app_dir}/{filename}'
+
+
+@inject
+async def download_file(
+    cmd: DownloadFile,
+    uow: UnitOfWork,
+    yandex_storage: YandexStorage = Provide['yandex_storage'],
+) -> str:
+    await yandex_storage.download(cmd.filename, cmd.dest_dir)
+    return f'{cmd.dest_dir}/{cmd.filename}'
