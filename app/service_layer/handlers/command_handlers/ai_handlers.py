@@ -56,6 +56,23 @@ SYSTEM_PROMPT_ACTION = """Ты - бот, который парсит сообщ�
 
 
 @inject
+def generate_embeddings(
+    cmd: commands.GenerateEmbedding,
+    uow: UnitOfWork,
+    openai_client: OpenAI = Provide['openai_client'],
+    settings: Settings = Provide['settings'],
+):
+    """Generates an embedding."""
+    response = openai_client.embeddings.create(
+        input=cmd.text,
+        model=settings.openai.embedding_model,
+        timeout=60,
+        # dimensions=settings.openai.embedding_dimensions,
+    )
+    return response.data[0].embedding
+
+
+@inject
 async def generate_whining_answer(
     cmd: commands.GenerateAnswer,
     uow: UnitOfWork,
