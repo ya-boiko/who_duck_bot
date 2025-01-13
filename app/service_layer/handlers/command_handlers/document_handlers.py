@@ -6,10 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from openai import OpenAI
 
 from app.domain import commands
-from app.domain.models import StoreImage
-from app.service_layer.message_bus import MessageBus
 from app.service_layer.unit_of_work import UnitOfWork
-from app.settings import Settings
 
 
 SYSTEM_PROMPT = """Ты выступаешь в роли эксперта по описанию изображений. Твоя задача – давать максимально точное, подробное и объективное описание содержимого изображения. При этом необходимо учитывать следующие аспекты:
@@ -27,28 +24,11 @@ USER_PROMPT = """Пожалуйста, подробно опиши изобра�
 
 
 @inject
-def generate_embeddings(
-    cmd: commands.GenerateEmbedding,
-    uow: UnitOfWork,
-    openai_client: OpenAI = Provide['openai_client'],
-    settings: Settings = Provide['settings'],
-):
-    """Generates an embedding."""
-    response = openai_client.embeddings.create(
-        input=cmd.text,
-        model=settings.openai.embedding_model,
-        timeout=60,
-        # dimensions=settings.openai.embedding_dimensions,
-    )
-    return response.data[0].embedding
-
-
-@inject
 async def generate_image_description(
     cmd: commands.GenerateDocumentDescription,
     uow: UnitOfWork,
     openai_client: OpenAI = Provide['openai_client'],
-) -> str:
+) -> dict:
     """Generates the image description."""
     with open(cmd.file_path, 'rb') as binary_file:
         binary_file_data = binary_file.read()
@@ -75,6 +55,5 @@ async def generate_image_description(
         )
 
         description = completion.choices[0].message.content
-
 
     return description
